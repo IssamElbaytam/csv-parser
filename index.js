@@ -24,6 +24,7 @@ var Parser = function (opts) {
     this.newline = nl
     this.customNewline = false
   }
+  this.singleLineCells = opts.singleLineCells
 
   this.headers = opts.headers || null
   this.strict = opts.strict || null
@@ -63,7 +64,6 @@ Parser.prototype._transform = function (data, enc, cb) {
   }
 
   var bufLen = buf.length
-
   for (var i = start; i < bufLen; i++) {
     var chr = buf[i]
     var nextChr = i + 1 < bufLen ? buf[i + 1] : null
@@ -81,7 +81,7 @@ Parser.prototype._transform = function (data, enc, cb) {
       continue
     }
 
-    if (!this._quoted) {
+    if (!this._quoted || this.singleLineCells) {
       if (this._first && !this.customNewline) {
         if (chr === nl) {
           this.newline = nl
