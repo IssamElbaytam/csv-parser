@@ -338,6 +338,17 @@ test('rename columns', function (t) {
   }
 })
 
+test.only('force single line', function (t) {
+  collect('invalid_unclosed_quote.csv', {singleLineCells: true}, verify)
+  function verify (err, lines) {
+    t.false(err, 'no err')
+    t.same(lines[0], {a: 'one', b: 'and two'}, 'first row')
+    t.same(lines[1], {a: 'but where is', b: 'this "last" row?'}, 'second row')
+    t.equal(lines.length, 2, '2 rows')
+    t.end()
+  }
+})
+
 // helpers
 
 function fixture (name) {
