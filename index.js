@@ -160,7 +160,7 @@ Parser.prototype._online = function (buf, start, end) {
   }
 
   if (this._quoted) { // open-quoted last cell
-    this._quoted = false // reset the state; remove the opening quote
+    // remove the opening quote:
     cells[cells.length - 1] = cells[cells.length - 1].slice(1)
   }
 
@@ -169,6 +169,10 @@ Parser.prototype._online = function (buf, start, end) {
   } else {
     this._emit(this._Row, cells)
   }
+  // reset the state of an invalid un-closed quote;
+  // only after we emitted because we want to know when we make the Row that the state was broken.
+  // so that we can report the issue to the user if we override _emit.
+  this._quoted = false
 }
 
 Parser.prototype._compile = function () {
